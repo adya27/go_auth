@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
@@ -8,6 +9,7 @@ import (
 
 const (
 	authorizationHeader = "Authorization"
+	userCtx             = "userId"
 )
 
 func (h *Handler) userIdentity(c *gin.Context) {
@@ -21,4 +23,13 @@ func (h *Handler) userIdentity(c *gin.Context) {
 		NewErrorResponce(c, http.StatusUnauthorized, "invalid auth header")
 		return
 	}
+
+	fmt.Println("headerParts", headerParts)
+
+	userId, err := h.services.ParseToken(headerParts[1])
+	if err != nil {
+		NewErrorResponce(c, http.StatusUnauthorized, err.Error())
+	}
+
+	c.Set(userCtx, userId)
 }

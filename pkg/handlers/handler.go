@@ -23,7 +23,7 @@ func (h *Handler) InitHRoutes() *gin.Engine {
 
 	}
 
-	api := router.Group("/api")
+	api := router.Group("/api", h.userIdentity)
 	{
 		lists := api.Group("/lists")
 		{
