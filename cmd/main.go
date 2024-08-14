@@ -30,7 +30,7 @@ func main() {
 		SSLMode:  viper.GetString("db.sslmode"),
 	})
 	if err != nil {
-		logrus.Fatalf("Can't initialize DataBase. Error: %s", err.Error())
+		logrus.Fatalf("Can't initialize DataBase. ErrorResponse: %s", err.Error())
 	}
 	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
