@@ -4,6 +4,7 @@ import (
 	todo "github.com/adya27/todogo"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 func (h *Handler) createList(c *gin.Context) {
@@ -29,12 +30,51 @@ func (h *Handler) createList(c *gin.Context) {
 	})
 }
 
+type getAllListsResponce struct {
+	Data []todo.TodoList `json:"data"`
+}
+
+type getListByIdResponce struct {
+	Data todo.TodoList `json:"data"`
+}
+
 func (h *Handler) getAllLists(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		return
+	}
+
+	lists, err := h.services.TodoList.GetAll(userId)
+	if err != nil {
+		NewErrorResponce(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, getAllListsResponce{
+		Data: lists,
+	})
 
 }
 
 func (h *Handler) getListById(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		return
+	}
 
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		NewErrorResponce(c, http.StatusBadRequest, "invalid id Param")
+		return
+	}
+
+	list, err := h.services.TodoList.GetListById(userId, id)
+	if err != nil {
+		NewErrorResponce(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, list)
 }
 
 func (h *Handler) updateList(c *gin.Context) {
