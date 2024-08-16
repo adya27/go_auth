@@ -37,10 +37,13 @@ func (h *Handler) InitHRoutes() *gin.Engine {
 			{
 				items.POST("/", h.createItem)
 				items.GET("/", h.getAllItems)
-				items.GET("/:id", h.getItemById)
-				items.PUT("/:id", h.updateItem)
-				items.DELETE("/:item_id", h.deleteItem)
 			}
+		}
+		items := lists.Group("/items")
+		{
+			items.GET("/:id", h.getItemById)
+			items.PUT("/:id", h.updateItem)
+			items.DELETE("/:id", h.deleteItem)
 		}
 
 	}
